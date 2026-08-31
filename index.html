@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Freeloaders Archive | Free AI Tools, Credits & Developer Resources</title>
+
+	<!-- SEO -->
+	<meta name="description" content="A collection of free AI tools, API and cloud credits, developer software, hosting, domains, courses and more. Find useful offers worth claiming.">
+	<meta name="keywords" content="free AI tools, free AI credits, free API credits, free cloud credits, free developer tools, free software, free hosting, free domains, developer discounts, student offers, AI resources, developer resources">
+
+	<!-- Open Graph -->
+	<meta property="og:title" content="Freeloaders Archive">
+	<meta property="og:description" content="Free AI tools, API and cloud credits, developer software, hosting, domains and other offers worth claiming.">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://kawishkamd.github.io/freeloaders-archive/">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="Freeloaders Archive">
+	<meta name="twitter:description" content="A collection of free AI tools, credits, developer software, hosting, domains and other useful offers.">
+
+	<link rel="stylesheet" id="theme-css" href="https://cdn.jsdelivr.net/npm/bootswatch@5.3.8/dist/darkly/bootstrap.min.css">
+	<style>
+		main
+		{
+			font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji';
+			font-size: 16px;
+			line-height: 1.5;
+			width: 960px;
+			margin: auto;
+		}
+		select
+		{
+			position: fixed;
+			bottom: 0;
+			right: 0;
+		}
+		#load-error
+		{
+			display: none;
+			text-align: center;
+			padding: 60px 20px;
+		}
+		#load-error code
+		{
+			background: rgba(127, 127, 127, 0.15);
+			padding: 2px 6px;
+			border-radius: 4px;
+		}
+	</style>
+</head>
+<body>
+
+	<select id="theme-select" onchange="changeCSS( this.value )">
+		<option value="darkly">Darkly</option>
+		<option value="cyborg">Cyborg</option>
+	</select>
+
+	<main>Loading the freeloaders archive…</main>
+
+	<div id="load-error">
+		<h2>Could not load the list</h2>
+		<p id="error-detail"></p>
+		<p>
+			View it directly on GitHub:<br>
+			<a id="repo-link" href="https://github.com/kawishkamd/freeloaders-archive">github.com/kawishkamd/freeloaders-archive</a>
+		</p>
+	</div>
+
+	<!-- JavaScript Library to Convert Markdown into HTML -->
+	<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+	<!-- Marked plugin to add heading ID's -->
+	<script src="https://cdn.jsdelivr.net/npm/marked-gfm-heading-id/lib/index.umd.js"></script>
+
+	<!-- Sanitizer to strip any HTML/JS from contributor-submitted Markdown before rendering -->
+	<script src="https://cdn.jsdelivr.net/npm/dompurify@3.2.7/dist/purify.min.js"></script>
+
+	<script>
+		// Basic Settings
+		const defaultTheme = 'darkly';
+		const bootswatchVersion = '5.3.8'; // Last updated: 29 December, 2025
+		// Update last one only when https://www.jsdelivr.com/package/npm/bootswatch is updated.
+		const repoURL = 'https://github.com/kawishkamd/freeloaders-archive';
+		const readmeURL = 'https://raw.githubusercontent.com/kawishkamd/freeloaders-archive/main/Readme.md';
+		const themeStorageKey = 'freeloaders-theme';
+
+		// Configure marked.js to use GitHub heading IDs to allow the contents list to function
+		marked.use( markedGfmHeadingId.gfmHeadingId() );
+
+		// Restore the saved theme (or fall back to the default) on page load
+		function applyTheme( theme )
+		{
+			document.getElementById( 'theme-css' ).href
+				= `https://cdn.jsdelivr.net/npm/bootswatch@${bootswatchVersion}/dist/${theme}/bootstrap.min.css`;
+			document.getElementById( 'theme-select' ).value = theme;
+		}
+
+		// Only allow known theme names, in case stored data was tampered with
+		function isValidTheme( theme )
+		{
+			return Array.from( document.getElementById( 'theme-select' ).options ).some( option => option.value === theme );
+		}
+
+		const savedTheme = localStorage.getItem( themeStorageKey );
+		applyTheme( isValidTheme( savedTheme ) ? savedTheme : defaultTheme );
+
+		// Change the theme and remember the choice
+		function changeCSS( theme )
+		{
+			applyTheme( theme );
+			localStorage.setItem( themeStorageKey, theme );
+		}
+
+		// Get the markdown file, convert it to HTML & put it inside the main tag
+		fetch( readmeURL )
+			.then( response =>
+			{
+				if ( !response.ok ) throw new Error( `HTTP ${response.status}` );
+				return response.text();
+			})
+			.then( data =>
+			{
+				const mainEl = document.querySelector( 'main' );
+				// Sanitize the rendered Markdown: it contains content from public pull requests,
+				// so any embedded scripts or event handlers must be stripped before insertion
+				mainEl.innerHTML = DOMPurify.sanitize( marked.parse( data ) );
+				// Open all external links in a new tab
+				mainEl.querySelectorAll( 'a[href^="http://"], a[href^="https://"]' ).forEach( link => {
+					link.setAttribute( 'target', '_blank' );
+					link.setAttribute( 'rel', 'noopener noreferrer' );
+				});
+			})
+			.catch( error =>
+			{
+				console.error( 'Error:', error );
+				document.querySelector( 'main' ).style.display = 'none';
+				const detailEl = document.getElementById( 'error-detail' );
+				detailEl.innerHTML = 'Failed to fetch <code>Readme.md</code> from GitHub (<code></code>).';
+				// Insert the raw error message via textContent so it can never be interpreted as HTML
+				detailEl.querySelector( 'code:last-of-type' ).textContent = error.message;
+				document.getElementById( 'repo-link' ).href = repoURL;
+				document.getElementById( 'load-error' ).style.display = 'block';
+			});
+	</script>
+</body>
+</html>
