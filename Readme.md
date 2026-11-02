@@ -438,6 +438,7 @@ The web version of this repository can be found [here](https://kawishkamd.github
 
 ### Networking and Tunnels
 
+* [Kilobat for Students](https://kilobat.app/students) macOS network monitor; free Pro for 1 year on 2 Macs for eligible students 13+ in degree-granting study. Request and renew while enrolled via school email; no payment or account required.
 * ★ [Cloudflare Tunnels](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/) Free zero-trust tunnels to securely expose local and homelab servers without port forwarding
 * ★ [Tailscale](https://tailscale.com/) Free mesh VPN connecting up to 100 devices and 3 users on encrypted WireGuard network
 * [Pinggy](https://pinggy.io/) Instant free public URLs for localhost with a single SSH command
